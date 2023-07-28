@@ -1,0 +1,15 @@
+node_modules
+dist
+pnpm-lock.yaml
+dev
+.storybook
+storybook-static
+.babelrc.json
+components.json
+index.html
+reactStartup.tsx
+/src/stories
+styles
+postcss.config.js
+tailwind.config.js
+vite.config.js
