@@ -1,14 +1,10 @@
-import React, { PropsWithChildren, useState, useEffect } from "react";
+import { PropsWithChildren, useState } from "react";
 import CookiesContext, { CookiesContextProps } from "./context";
 
 export const CookiesWrapper = ({ children }: PropsWithChildren) => {
-  const [categories, setCategories] = useState<
-    CookiesContextProps["categories"]
-  >({});
+  const [categories, setCats] = useState<CookiesContextProps["categories"]>({});
 
-  useEffect(() => {
-    console.log(categories);
-  }, [categories]);
+  const [isBoxOpen, changeBoxState] = useState<boolean>(true);
 
   const setCategory = (name: string, state: boolean) => {
     const categoriesCopy = { ...categories };
@@ -17,12 +13,20 @@ export const CookiesWrapper = ({ children }: PropsWithChildren) => {
     setCategories(categoriesCopy);
   };
 
-  const addCategories = (cats: CookiesContextProps["categories"]) => {
-    setCategories({ ...categories, ...cats });
+  const setCategories = (cats: CookiesContextProps["categories"]) => {
+    setCats({ ...categories, ...cats });
   };
 
   return (
-    <CookiesContext.Provider value={{ categories, setCategory, addCategories }}>
+    <CookiesContext.Provider
+      value={{
+        categories,
+        setCategory,
+        setCategories,
+        isBoxOpen,
+        changeBoxState,
+      }}
+    >
       {children}
     </CookiesContext.Provider>
   );

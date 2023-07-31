@@ -62,8 +62,6 @@ const defaultProps: CookiesProps = {
 
 const Cookies = forwardRef<HTMLDivElement, PropsWithChildren<CookiesProps>>(
   ({ categories, texts, colors, children }, ref) => {
-    const [closed, setClosed] = useState(false);
-
     const [isPersonalizing, setIsPersonalizing] = useState(false);
 
     const [categoriesExpanded, setCategoriesExpanded] = useState<boolean[]>([
@@ -73,7 +71,9 @@ const Cookies = forwardRef<HTMLDivElement, PropsWithChildren<CookiesProps>>(
     const {
       setCategory,
       categories: selectedCategories,
-      addCategories,
+      setCategories,
+      isBoxOpen,
+      changeBoxState,
     } = useCookies();
 
     const innerRef = useRef<HTMLDivElement>(null);
@@ -81,7 +81,7 @@ const Cookies = forwardRef<HTMLDivElement, PropsWithChildren<CookiesProps>>(
     useImperativeHandle(ref, () => innerRef.current!);
 
     useEffect(() => {
-      addCategories(
+      setCategories(
         categories.reduce(
           (acc, { selected, title }) => ({ ...acc, [title]: selected }),
           {}
@@ -89,7 +89,7 @@ const Cookies = forwardRef<HTMLDivElement, PropsWithChildren<CookiesProps>>(
       );
     }, []);
 
-    if (closed) return null;
+    if (!isBoxOpen) return null;
 
     const onSwitchChange = (idx: number, checked: boolean, name: string) => {
       const switchBtn = innerRef.current?.querySelectorAll("span[data-state]")[
@@ -127,14 +127,14 @@ const Cookies = forwardRef<HTMLDivElement, PropsWithChildren<CookiesProps>>(
     };
 
     const selectAllCategories = () => {
-      addCategories(
+      setCategories(
         categories.reduce((acc, { title }) => ({ ...acc, [title]: true }), {})
       );
     };
 
     const handleAcceptClick = () => {
       if (!isPersonalizing) selectAllCategories();
-      setClosed(true);
+      changeBoxState(false);
     };
 
     return (

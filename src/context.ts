@@ -3,13 +3,17 @@ import { createContext } from "react";
 export type CookiesContextProps = {
   categories: { [key: string]: boolean };
   setCategory: (name: string, state: boolean) => any;
-  addCategories: (cats: CookiesContextProps["categories"]) => any;
+  setCategories: (cats: CookiesContextProps["categories"]) => any;
+  isBoxOpen: boolean;
+  changeBoxState: (state: boolean) => any;
 };
 
 const CookiesContext = createContext<CookiesContextProps>({
   categories: {},
   setCategory: () => {},
-  addCategories: () => {},
+  setCategories: () => {},
+  isBoxOpen: true,
+  changeBoxState: () => {},
 });
 
 export default CookiesContext;
