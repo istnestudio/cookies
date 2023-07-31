@@ -1,15 +1,45 @@
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
+
+import cookie from "js-cookie";
+
 import CookiesContext, { CookiesContextProps } from "./context";
 
-export const CookiesWrapper = ({ children }: PropsWithChildren) => {
-  const [categories, setCats] = useState<CookiesContextProps["categories"]>({});
+import { COOKIE_PREFIX } from ".";
 
-  const [isBoxOpen, changeBoxState] = useState<boolean>(true);
+import getStringBoolValue from "./utils/getStringBoolValue";
 
-  const setCategory = (name: string, state: boolean) => {
+export const CookiesWrapper = ({
+  children,
+  categories: defaultCategories,
+}: CookiesWrapperProps) => {
+  const [categories, setCats] =
+    useState<CookiesContextProps["categories"]>(defaultCategories);
+
+  const [isBoxOpen, changeBoxState] = useState<boolean>(false);
+
+  useEffect(() => {
+    Object.keys(categories).forEach((key) => {
+      if (!cookie.get(`${COOKIE_PREFIX}${key}`)) {
+        cookie.set(`${COOKIE_PREFIX}${key}`, "false");
+        return;
+      }
+
+      setCategory(
+        key,
+        getStringBoolValue(cookie.get(`${COOKIE_PREFIX}${key}`))
+      );
+    });
+
+    if (!getStringBoolValue(cookie.get(`${COOKIE_PREFIX}accepted`))) {
+      cookie.set(`${COOKIE_PREFIX}accepted`, "false");
+      changeBoxState(true);
+    }
+  }, []);
+
+  const setCategory = (key: string, state: boolean) => {
     const categoriesCopy = { ...categories };
 
-    categoriesCopy[name] = state;
+    categoriesCopy[key].selected = state;
     setCategories(categoriesCopy);
   };
 
@@ -23,11 +53,15 @@ export const CookiesWrapper = ({ children }: PropsWithChildren) => {
         categories,
         setCategory,
         setCategories,
-        isBoxOpen,
-        changeBoxState,
+        isCookiesBoxOpen: isBoxOpen,
+        changeCookiesBoxState: changeBoxState,
       }}
     >
       {children}
     </CookiesContext.Provider>
   );
 };
+
+type CookiesWrapperProps = PropsWithChildren<{
+  categories: CookiesContextProps["categories"];
+}>;

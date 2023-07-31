@@ -1,13 +1,12 @@
 {
   "name": "@istnestudio/cookies",
-  "version": "1.0.71",
+  "version": "1.1.0",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "storybook dev -p 6006",
     "build": "tsc --p tsconfig.json && tailwindcss -o dist/styles.css --minify",
-    "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "repository": {
@@ -30,6 +29,7 @@
     "@storybook/react": "^7.1.1",
     "@storybook/react-vite": "^7.1.1",
     "@storybook/testing-library": "^0.2.0",
+    "@types/js-cookie": "^3.0.3",
     "@types/react": "^18.2.17",
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.14",
@@ -53,6 +53,7 @@
     "classnames": "^2.3.2",
     "clsx": "^2.0.0",
     "gsap": "^3.12.2",
+    "js-cookie": "^3.0.5",
     "lucide-react": "^0.263.1",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.6"

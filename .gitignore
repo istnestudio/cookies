@@ -1,11 +1,6 @@
 node_modules
 dist
 pnpm-lock.yaml
-.storybook
-storybook-static
-.babelrc.json
-index.html
-reactStartup.tsx
-/src/stories
-styles
-vite.config.js
+
+
+

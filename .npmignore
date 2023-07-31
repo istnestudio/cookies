@@ -1,0 +1,8 @@
+styles
+vite.config.js
+reactStartup.tsx
+/src/stories
+index.html
+.storybook
+storybook-static
+.babelrc.json

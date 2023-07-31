@@ -2,29 +2,34 @@
 
 import {
   forwardRef,
-  PropsWithChildren,
   useState,
   useRef,
   useImperativeHandle,
-  useEffect,
   CSSProperties,
   HTMLAttributes,
+  useEffect,
 } from "react";
 
 import gsap from "gsap";
 
-import { Switch } from "./@/components/ui/switch";
+import cookie from "js-cookie";
 
 import hexToHsl from "./utils/hexToHsl";
-import { useCookies } from ".";
+
+import {
+  COOKIE_PREFIX,
+  useCookies,
+  useCookiesBoxState,
+  useCookiesChange,
+} from ".";
+
+import { CookiesContextProps } from "./context";
+
+import { Switch } from "./@/components/ui/switch";
+
 import { cn } from "./@/lib/utils";
 
 type CookiesProps = {
-  categories: {
-    title: string;
-    description: string;
-    selected: boolean;
-  }[];
   texts?: {
     title?: string;
     accept?: string;
@@ -41,16 +46,19 @@ type CookiesProps = {
     switchChecked: string;
     button?: string;
   };
+  onCookiesChange?: (cats: CookiesContextProps["categories"]) => any;
+  onCookiesBoxState?: (state: boolean) => any;
 };
 
 const defaultProps: CookiesProps = {
-  categories: [],
   texts: {
-    title: "Pliki cookies",
-    accept: "akceptuję",
-    choiceAccept: "akceptuję wybór",
-    back: "wróć",
-    personalize: "dostosuj",
+    description:
+      "The site uses cookies to provide the highest quality service and for statistical purposes. You can read more in our privacy policy page",
+    title: "Cookie files",
+    accept: "accept",
+    choiceAccept: "accept the choice",
+    back: "back",
+    personalize: "personalize",
   },
   colors: {
     switch: "#eaeaea",
@@ -64,187 +72,215 @@ const defaultProps: CookiesProps = {
 
 const Cookies = forwardRef<
   HTMLDivElement,
-  PropsWithChildren<CookiesProps> & HTMLAttributes<HTMLDivElement>
->(({ categories, texts, colors, children, className, ...domProps }, ref) => {
-  const [isPersonalizing, setIsPersonalizing] = useState(false);
+  CookiesProps & HTMLAttributes<HTMLDivElement>
+>(
+  (
+    {
+      texts,
+      colors,
+      onCookiesChange,
+      onCookiesBoxState,
+      className,
+      ...domProps
+    },
+    ref
+  ) => {
+    const [isPersonalizing, setIsPersonalizing] = useState(false);
 
-  const [categoriesExpanded, setCategoriesExpanded] = useState<boolean[]>([
-    ...categories.map(() => false),
-  ]);
+    const {
+      setCategory,
+      categories: selectedCategories,
+      setCategories,
+      isCookiesBoxOpen,
+      changeCookiesBoxState,
+    } = useCookies();
 
-  const {
-    setCategory,
-    categories: selectedCategories,
-    setCategories,
-    isBoxOpen,
-    changeBoxState,
-  } = useCookies();
+    const [categoriesExpanded, setCategoriesExpanded] = useState<boolean[]>([
+      ...Object.keys(selectedCategories).map(() => false),
+    ]);
 
-  const innerRef = useRef<HTMLDivElement>(null);
+    useCookiesChange(onCookiesChange);
+    useCookiesBoxState(onCookiesBoxState);
 
-  useImperativeHandle(ref, () => innerRef.current!);
+    const innerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setCategories(
-      categories.reduce(
-        (acc, { selected, title }) => ({ ...acc, [title]: selected }),
-        {}
-      )
-    );
-  }, []);
+    useImperativeHandle(ref, () => innerRef.current!);
 
-  if (!isBoxOpen) return null;
+    const onSwitchChange = (idx: number, checked: boolean, key: string) => {
+      const switchBtn = innerRef.current?.querySelectorAll("span[data-state]")[
+        idx
+      ] as HTMLButtonElement;
 
-  const onSwitchChange = (idx: number, checked: boolean, name: string) => {
-    const switchBtn = innerRef.current?.querySelectorAll("span[data-state]")[
-      idx
-    ] as HTMLButtonElement;
+      switchBtn &&
+        switchBtn.style.setProperty(
+          "--background",
+          hexToHsl(checked ? colors?.switchChecked : colors?.main)
+        );
 
-    switchBtn.style.setProperty(
-      "--background",
-      hexToHsl(checked ? colors?.switchChecked : colors?.main)
-    );
+      setCategory(key, checked);
+    };
 
-    setCategory(name, checked);
-  };
+    useEffect(() => {
+      if (!isPersonalizing) return;
 
-  const onCategoryExpand = (idx: number) => {
-    const expandedCopy = [...categoriesExpanded];
-    expandedCopy[idx] = !categoriesExpanded[idx];
+      Object.entries(selectedCategories).forEach(([key, { selected }], idx) =>
+        onSwitchChange(idx, selected || false, key)
+      );
+    }, [isPersonalizing]);
 
-    setCategoriesExpanded(expandedCopy);
+    if (!isCookiesBoxOpen) return null;
 
-    const categoryDescription = innerRef.current?.querySelectorAll(
-      ".category-description"
-    )[idx]!;
+    const onCategoryExpand = (idx: number) => {
+      const expandedCopy = [...categoriesExpanded];
+      expandedCopy[idx] = !categoriesExpanded[idx];
 
-    const categoryState = !categoriesExpanded[idx];
+      setCategoriesExpanded(expandedCopy);
 
-    gsap.set(categoryDescription, { autoAlpha: 0 });
+      const categoryDescription = innerRef.current?.querySelectorAll(
+        ".category-description"
+      )[idx]!;
 
-    gsap.to(categoryDescription, {
-      duration: 0.2,
-      height: categoryState ? "auto" : 0,
-      opacity: categoryState ? 1 : 0,
-      autoAlpha: categoryState ? 1 : 0,
-    });
-  };
+      const categoryState = !categoriesExpanded[idx];
 
-  const selectAllCategories = () => {
-    setCategories(
-      categories.reduce((acc, { title }) => ({ ...acc, [title]: true }), {})
-    );
-  };
+      gsap.set(categoryDescription, { autoAlpha: 0 });
 
-  const handleAcceptClick = () => {
-    if (!isPersonalizing) selectAllCategories();
-    changeBoxState(false);
-  };
+      gsap.to(categoryDescription, {
+        duration: 0.2,
+        height: categoryState ? "auto" : 0,
+        opacity: categoryState ? 1 : 0,
+        autoAlpha: categoryState ? 1 : 0,
+      });
+    };
 
-  return (
-    <div
-      {...domProps}
-      ref={innerRef}
-      className={cn(
-        "p-12 flex flex-col gap-16 shadow-sm w-fit lg:max-w-[396px]",
-        className
-      )}
-      style={{ background: colors?.background }}
-    >
-      <p className="text-lg font-medium" style={{ color: colors?.main }}>
-        {texts?.title}
-      </p>
-      {isPersonalizing ? (
-        <div className="flex flex-col gap-4">
-          {categories?.map(({ title, description }, idx) => (
-            <div className="flex flex-col gap-2" key={title}>
-              <div className="flex gap-4 items-center">
-                <button
-                  className="w-fit h-fit transition-transform"
-                  onClick={() => onCategoryExpand(idx)}
-                  style={{
-                    transform: `rotateZ(${
-                      categoriesExpanded[idx] ? 180 : 0
-                    }deg)`,
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="11"
-                    height="8"
-                    viewBox="0 0 11 8"
-                    fill="none"
-                  >
-                    <path
-                      d="M1 1.5L5.5 6.5L10 1.5"
-                      stroke={colors?.main}
-                      strokeWidth="2"
-                    />
-                  </svg>
-                </button>
-                <p
-                  className="w-full text-base cursor-pointer"
-                  style={{ color: colors?.main }}
-                  onClick={() => onCategoryExpand(idx)}
-                >
-                  {title}
-                </p>
-                <Switch
-                  checked={selectedCategories[title]}
-                  onCheckedChange={(checked) =>
-                    onSwitchChange(idx, checked, title)
-                  }
-                  className="h-[22px] [&>span]:h-[14px] [&>span]:w-[14px] px-[2px]"
-                  style={
-                    {
-                      "--primary": hexToHsl(colors?.main),
-                      "--input": hexToHsl(colors?.switch),
-                      "--background": hexToHsl(
-                        selectedCategories[title]
-                          ? colors?.switchChecked
-                          : colors?.main
-                      ),
-                    } as CSSProperties
-                  }
-                />
-              </div>
-              <p
-                className="category-description text-xs h-0 !leading-[18px] opacity-0 pointer-events-none"
-                style={{ color: colors?.description }}
-              >
-                {description}
-              </p>
+    const selectAllCategories = () => {
+      setCategories(
+        Object.keys(selectedCategories).reduce(
+          (acc, key) => ({ ...acc, [key]: true }),
+          {}
+        )
+      );
+    };
+
+    const handleAcceptClick = () => {
+      if (!isPersonalizing) selectAllCategories();
+      changeCookiesBoxState(false);
+
+      cookie.set(`${COOKIE_PREFIX}accepted`, "true");
+
+      Object.entries(selectedCategories).forEach(([key, { selected }]) => {
+        cookie.set(`${COOKIE_PREFIX}${key}`, selected?.toString() || "false");
+      });
+    };
+
+    return (
+      <div className="fixed z-[99999] flex justify-center items-end w-screen h-screen left-0 top-0 lg:p-10 lg:justify-end">
+        <div
+          {...domProps}
+          ref={innerRef}
+          className={cn(
+            "p-12 flex flex-col gap-16 shadow-sm w-fit lg:max-w-[396px]",
+            className
+          )}
+          style={{ background: colors?.background }}
+        >
+          <p className="text-lg font-medium" style={{ color: colors?.main }}>
+            {texts?.title}
+          </p>
+          {isPersonalizing ? (
+            <div className="flex flex-col gap-4">
+              {Object.entries(selectedCategories).map(
+                ([key, { title, description, selected }], idx) => (
+                  <div className="flex flex-col gap-2" key={key}>
+                    <div className="flex gap-4 items-center">
+                      <button
+                        className="w-fit h-fit transition-transform"
+                        onClick={() => onCategoryExpand(idx)}
+                        style={{
+                          transform: `rotateZ(${
+                            categoriesExpanded[idx] ? 180 : 0
+                          }deg)`,
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="11"
+                          height="8"
+                          viewBox="0 0 11 8"
+                          fill="none"
+                        >
+                          <path
+                            d="M1 1.5L5.5 6.5L10 1.5"
+                            stroke={colors?.main}
+                            strokeWidth="2"
+                          />
+                        </svg>
+                      </button>
+                      <p
+                        className="w-full text-base cursor-pointer"
+                        style={{ color: colors?.main }}
+                        onClick={() => onCategoryExpand(idx)}
+                      >
+                        {title}
+                      </p>
+                      <Switch
+                        checked={selected}
+                        onCheckedChange={(checked) =>
+                          onSwitchChange(idx, checked, key)
+                        }
+                        className="h-[22px] [&>span]:h-[14px] [&>span]:w-[14px] px-[2px]"
+                        style={
+                          {
+                            "--primary": hexToHsl(colors?.main),
+                            "--input": hexToHsl(colors?.switch),
+                            "--background": hexToHsl(
+                              selectedCategories[key]
+                                ? colors?.switchChecked
+                                : colors?.main
+                            ),
+                          } as CSSProperties
+                        }
+                      />
+                    </div>
+                    <p
+                      className="category-description text-xs h-0 !leading-[18px] opacity-0 pointer-events-none"
+                      style={{ color: colors?.description }}
+                    >
+                      {description}
+                    </p>
+                  </div>
+                )
+              )}
             </div>
-          ))}
-        </div>
-      ) : (
-        <p
-          className="text-sm !leading-7"
-          style={{ color: colors?.description }}
-        >
-          {children}
-        </p>
-      )}
+          ) : (
+            <p
+              className="text-sm !leading-7"
+              style={{ color: colors?.description }}
+            >
+              {texts?.description}
+            </p>
+          )}
 
-      <div>
-        <button
-          className="px-6 py-4 text-sm"
-          style={{ background: colors?.main, color: colors?.button }}
-          onClick={handleAcceptClick}
-        >
-          {isPersonalizing ? texts?.choiceAccept : texts?.accept}
-        </button>
-        <button
-          onClick={() => setIsPersonalizing(!isPersonalizing)}
-          className="px-6 py-4 text-sm"
-          style={{ color: colors?.description }}
-        >
-          {isPersonalizing ? texts?.back : texts?.personalize}
-        </button>
+          <div>
+            <button
+              className="px-6 py-4 text-sm"
+              style={{ background: colors?.main, color: colors?.button }}
+              onClick={handleAcceptClick}
+            >
+              {isPersonalizing ? texts?.choiceAccept : texts?.accept}
+            </button>
+            <button
+              onClick={() => setIsPersonalizing(!isPersonalizing)}
+              className="px-6 py-4 text-sm"
+              style={{ color: colors?.description }}
+            >
+              {isPersonalizing ? texts?.back : texts?.personalize}
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 Cookies.defaultProps = defaultProps;
 
