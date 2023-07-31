@@ -1,12 +1,13 @@
 {
   "name": "@istnestudio/cookies",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "dev": "storybook dev -p 6006",
     "build": "tsc --p tsconfig.json && tailwindcss -o dist/styles.css --minify",
+    "build-and-publish": "pnpm build && npm publish",
     "build-storybook": "storybook build"
   },
   "repository": {
