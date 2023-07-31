@@ -12,11 +12,13 @@ Customisable cookie consent box made for React apps.
 
 ## Navigation 🔍
 
-- Installation
-- Usage
-- Customize
-- Types
-- Hooks
+- [Installation](#installation)
+- [Usage](#usage)
+- [Customization](#customization)
+- [Types](#types)
+- [Hooks](#hooks)
+
+<a name="installation"></a>
 
 ## Instalation 💽
 
@@ -27,6 +29,8 @@ pnpm add @istnestudio/cookies
 yarn add @istnestudio/cookies
 npm install --save @istnestudio/cookies
 ```
+
+<a name="usage"></a>
 
 ## Usage 🔧
 
@@ -69,7 +73,9 @@ const App = () => (
 export default App;
 ```
 
-## Customize 🎨
+<a name="customization"></a>
+
+## Customization 🎨
 
 ```tsx
 <Cookies
@@ -102,6 +108,8 @@ export default App;
 ![Title](https://cdn.discordapp.com/attachments/747723783544242299/1135535636141584484/image.png)
 
 ![Title](https://cdn.discordapp.com/attachments/747723783544242299/1135536242491150426/image.png)
+
+<a name="types"></a>
 
 ## Types ✒️
 
@@ -168,6 +176,8 @@ type CookiesWrapperProps = PropsWithChildren<{
   categories: CookiesContextProps["categories"];
 }>;
 ```
+
+<a name="hooks"></a>
 
 ## Hooks 🪝
 
