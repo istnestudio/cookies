@@ -1,12 +1,12 @@
-import * as React from "react";
+import React, { PropsWithChildren, useState, useEffect } from "react";
 import CookiesContext, { CookiesContextProps } from "./context";
 
-export const CookiesWrapper = ({ children }: React.PropsWithChildren) => {
-  const [categories, setCategories] = React.useState<
+export const CookiesWrapper = ({ children }: PropsWithChildren) => {
+  const [categories, setCategories] = useState<
     CookiesContextProps["categories"]
   >({});
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log(categories);
   }, [categories]);
 

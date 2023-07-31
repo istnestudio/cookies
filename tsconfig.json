@@ -1,6 +1,6 @@
 
 {
-  "include": ["src"],
+  "include": ["src/index.ts"],
   "exclude": [
     "dist",
     "node_modules"
@@ -19,7 +19,7 @@
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
     "declarationMap": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

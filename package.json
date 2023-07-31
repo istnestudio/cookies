@@ -1,11 +1,11 @@
 {
   "name": "@istnestudio/cookies",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsc ./src/index.ts --jsx 'react' --outDir './dist' --declaration true && tailwindcss -o dist/styles.css --minify",
+    "build": "tsc --p tsconfig.json && tailwindcss -o dist/styles.css --minify",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
