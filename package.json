@@ -1,6 +1,6 @@
 {
   "name": "@istnestudio/cookies",
-  "version": "1.1.2",
+  "version": "1.1.21",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
@@ -18,6 +18,9 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/istnestudio/istne-cookies/issues"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/istnestudio"
   },
   "homepage": "https://github.com/istnestudio/istne-cookies#readme",
   "devDependencies": {
