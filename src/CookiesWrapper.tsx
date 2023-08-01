@@ -1,3 +1,5 @@
+"use client";
+
 import { PropsWithChildren, useEffect, useState } from "react";
 
 import cookie from "js-cookie";

@@ -1,7 +1,7 @@
 styles
 vite.config.js
 reactStartup.tsx
-/src/stories
+src
 index.html
 .storybook
 storybook-static
