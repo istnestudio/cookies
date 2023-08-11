@@ -1,4 +1,6 @@
 module.exports = {
+  jit: true,
+  prefix: "tw-",
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",

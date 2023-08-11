@@ -173,27 +173,30 @@ const Cookies = forwardRef<
     };
 
     return (
-      <div className="fixed z-[99999] flex justify-center items-end w-screen h-screen left-0 top-0 lg:p-10 lg:justify-end">
+      <div className="tw-fixed tw-z-[99999] tw-flex tw-justify-center tw-items-end tw-w-screen tw-h-screen tw-left-0 tw-top-0 lg:tw-p-10 lg:tw-justify-end">
         <div
           {...domProps}
           ref={innerRef}
           className={cn(
-            "p-12 flex flex-col gap-16 shadow-sm w-fit lg:max-w-[396px]",
+            "tw-p-12 tw-flex tw-flex-col tw-gap-16 tw-shadow-sm tw-w-fit lg:tw-max-w-[396px]",
             className
           )}
           style={{ background: colors?.background }}
         >
-          <p className="text-lg font-medium" style={{ color: colors?.main }}>
+          <p
+            className="tw-text-lg tw-font-medium"
+            style={{ color: colors?.main }}
+          >
             {texts?.title}
           </p>
           {isPersonalizing ? (
-            <div className="flex flex-col gap-4">
+            <div className="tw-flex tw-flex-col tw-gap-4">
               {Object.entries(selectedCategories).map(
                 ([key, { title, description, selected }], idx) => (
-                  <div className="flex flex-col gap-2" key={key}>
-                    <div className="flex gap-4 items-center">
+                  <div className="tw-flex tw-flex-col tw-gap-2" key={key}>
+                    <div className="tw-flex tw-gap-4 tw-items-center">
                       <button
-                        className="w-fit h-fit transition-transform"
+                        className="tw-w-fit tw-h-fit tw-transition-transform"
                         onClick={() => onCategoryExpand(idx)}
                         style={{
                           transform: `rotateZ(${
@@ -216,7 +219,7 @@ const Cookies = forwardRef<
                         </svg>
                       </button>
                       <p
-                        className="w-full text-base cursor-pointer"
+                        className="tw-w-full tw-text-base tw-cursor-pointer"
                         style={{ color: colors?.main }}
                         onClick={() => onCategoryExpand(idx)}
                       >
@@ -227,7 +230,7 @@ const Cookies = forwardRef<
                         onCheckedChange={(checked) =>
                           onSwitchChange(idx, checked, key)
                         }
-                        className="h-[22px] [&>span]:h-[14px] [&>span]:w-[14px] px-[2px]"
+                        className="sw tw-h-[22px] tw-px-[2px]"
                         style={
                           {
                             "--primary": hexToHsl(colors?.main),
@@ -242,7 +245,7 @@ const Cookies = forwardRef<
                       />
                     </div>
                     <p
-                      className="category-description text-xs h-0 !leading-[18px] opacity-0 pointer-events-none"
+                      className="category-description tw-text-xs tw-h-0 !tw-leading-[18px] tw-opacity-0 tw-pointer-events-none"
                       style={{ color: colors?.description }}
                     >
                       {description}
@@ -253,7 +256,7 @@ const Cookies = forwardRef<
             </div>
           ) : (
             <p
-              className="text-sm !leading-7"
+              className="tw-text-sm tw-!leading-7"
               style={{ color: colors?.description }}
             >
               {texts?.description}
@@ -262,7 +265,7 @@ const Cookies = forwardRef<
 
           <div>
             <button
-              className="px-6 py-4 text-sm"
+              className="tw-px-6 tw-py-4 tw-text-sm"
               style={{ background: colors?.main, color: colors?.button }}
               onClick={handleAcceptClick}
             >
@@ -270,7 +273,7 @@ const Cookies = forwardRef<
             </button>
             <button
               onClick={() => setIsPersonalizing(!isPersonalizing)}
-              className="px-6 py-4 text-sm"
+              className="tw-px-6 tw-py-4 tw-text-sm"
               style={{ color: colors?.description }}
             >
               {isPersonalizing ? texts?.back : texts?.personalize}

@@ -65,6 +65,11 @@
     --ring: 0 0% 14.9%;
   }
 }
+
+.sw span{
+  width: 14px;
+  height: 14px;
+}
  
 @layer base {
   * {
