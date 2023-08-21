@@ -1,6 +1,6 @@
 {
   "name": "@istnestudio/cookies",
-  "version": "1.2.0",
+  "version": "1.2.01",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
@@ -20,7 +20,7 @@
     "url": "https://github.com/istnestudio/istne-cookies/issues"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/istnestudio"
+    "registry": "https://registry.npmjs.org"
   },
   "homepage": "https://github.com/istnestudio/istne-cookies#readme",
   "devDependencies": {
