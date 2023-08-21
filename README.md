@@ -34,28 +34,29 @@ npm install --save @istnestudio/cookies
 
 ## Usage 🔧
 
-1. Include stylesheet (place it in the top of other css imports)
+1. Include stylesheet
 
 ```tsx
-import "@istnestudio/cookies/dist/styles.css";
 import "../styles/satoshi.css"; //example css
 import "../styles/global.css"; // example css
+import "@istnestudio/cookies/dist/styles.css";
 ```
 
-2. Wrap your app with **CookiesWrapper** component, place **Cookies** component inside and populate **CookiesWrapper** with cookie consent categories.
+2.Place **Cookies** component inside and populate it with cookie consent categories and description.
 
 ```tsx
-import Cookies, { CookiesWrapper } from "@istnestudio/cookies";
+import Cookies from "@istnestudio/cookies";
 import "@istnestudio/cookies/dist/styles.css";
 
 const App = () => (
-  <CookiesWrapper
+  <Cookies
     categories={{
       necessary: {
         title: "Strictly Necessary",
         description:
           "Strictly necessary cookies are essential for websites to provide simple functions or to access particular features. Such features include the ability to sign in, add items to your cart in an online store, or purchase stuff on the internet.",
         selected: true,
+        uncheckable: true,
       },
       targeting: {
         title: "Targeting",
@@ -65,9 +66,8 @@ const App = () => (
       },
     }}
   >
-    <Cookies />
-    {/*Rest of the app.... */}
-  </CookiesWrapper>
+    Text inside box
+  </Cookies>
 );
 
 export default App;
@@ -78,7 +78,16 @@ export default App;
 ## Customization 🎨
 
 ```tsx
-<Cookies
+<CookiesBox
+  categories={{
+    necessary: {
+      title: "Strictly Necessary",
+      description:
+        "Strictly necessary cookies are essential for websites to provide simple functions or to access particular features. Such features include the ability to sign in, add items to your cart in an online store, or purchase stuff on the internet.",
+      selected: true,
+      uncheckable: true,
+    },
+  }}
   texts={{
     title: "Cookie files",
     description:
@@ -96,9 +105,10 @@ export default App;
     description: "#777",
     button: "#FFF",
   }}
-  onCookiesChange={(categories) => {}}
-  onCookiesBoxState={(isOpen) => {}}
-/>
+  onCookiesChange={(category) => {}}
+>
+  Text inside box
+</CookiesBox>
 ```
 
 ![Title](https://cdn.discordapp.com/attachments/747723783544242299/1135535193088860160/image.png)
@@ -111,32 +121,25 @@ export default App;
 
 <a name="types"></a>
 
-## Types ✒️
+## Types and constants ✒️
 
 ```ts
 type Category = {
   title: string;
   description: string;
   selected?: boolean;
-};
-
-//useCookie return type
-type CookiesContextProps = {
-  categories: { [key: string]: Category };
-  setCategory: (key: string, state: boolean) => any;
-  isCookiesBoxOpen: boolean;
-  changeCookiesBoxState: (state: boolean) => any;
+  uncheckable?: boolean;
 };
 
 //Default exported component props
 type CookiesProps = {
+  categories: { [key: string]: Category };
   texts?: {
     title?: string;
     accept?: string;
     back?: string;
     personalize?: string;
     choiceAccept: string;
-    description?: string;
   };
   colors?: {
     main?: string;
@@ -146,8 +149,7 @@ type CookiesProps = {
     switchChecked: string;
     button?: string;
   };
-  onCookiesChange?: (cats: CookiesContextProps["categories"]) => any;
-  onCookiesBoxState?: (state: boolean) => any;
+  onCookiesChange?: (cat: { key: string; value: boolean }) => any;
 };
 
 //Default props of default exported component
@@ -171,10 +173,8 @@ const defaultProps: CookiesProps = {
   },
 };
 
-//CookiesWrapper props
-type CookiesWrapperProps = PropsWithChildren<{
-  categories: CookiesContextProps["categories"];
-}>;
+const COOKIE_PREFIX = "istne-cookies-";
+const SHOWED_COOKIE = "showed";
 ```
 
 <a name="hooks"></a>
@@ -184,18 +184,14 @@ type CookiesWrapperProps = PropsWithChildren<{
 1. **useCookies** - Returns basic info and manipulation methods for cookie box
 
 ```ts
-const { setCategory, categories, isCookiesBoxOpen, changeCookiesBoxState } =
-  useCookies();
+const { categories, setCategory, setCategories } = useCookies();
 ```
 
-2. **useCookiesBoxState** - Triggers callback when cookie box is opening or closing
+2. **useCookiesChange** - Triggers callback when cookie consent is switched
 
 ```ts
-useCookiesBoxState((isOpen) => {});
-```
+useCookiesChangeState((category) => {});
 
-3. **useCookiesChange** - Triggers callback when cookie consent is switched
-
-```ts
-useCookiesBoxState((isOpen) => {});
+//callback param type
+type CategoryState = { [key: string]: boolean };
 ```

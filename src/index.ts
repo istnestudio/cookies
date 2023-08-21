@@ -1,16 +1,27 @@
 import Cookies from "./Cookies.js";
-import { CookiesWrapper } from "./CookiesWrapper.js";
-import useCookies from "./hooks/useCookies.js";
 import useCookiesChange from "./hooks/useCookiesChange.js";
-import useCookiesBoxState from "./hooks/useCookiesBoxState.js";
+import useCookiesCategories from "./hooks/useCookies.js";
+import getIstneCookies from "./utils/getIstneCookies.js";
 
-const COOKIE_PREFIX = "cookies-";
+const COOKIE_PREFIX = "istne-cookies-";
+const SHOWED_COOKIE = "showed";
+
+type Category = {
+  title: string;
+  description: string;
+  selected?: boolean;
+  uncheckable?: boolean;
+};
+
+type CategoryState = { [key: string]: boolean };
 
 export {
-  CookiesWrapper,
-  useCookies,
-  useCookiesChange,
-  useCookiesBoxState,
   COOKIE_PREFIX,
+  SHOWED_COOKIE,
+  Category,
+  CategoryState,
+  useCookiesChange,
+  useCookiesCategories,
+  getIstneCookies,
 };
 export default Cookies;

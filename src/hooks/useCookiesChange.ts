@@ -1,17 +1,34 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-import useCookies from "./useCookies";
-
-import { CookiesContextProps } from "../context";
+import getIstneCookies from "../utils/getIstneCookies";
+import { SHOWED_COOKIE } from "..";
 
 const useCookiesChange = (
-  cb?: (cats: CookiesContextProps["categories"]) => any | undefined
+  cb?: (cat: { key: string; value: boolean }) => any | undefined
 ) => {
-  const { categories } = useCookies();
+  const interval = useRef<NodeJS.Timer>();
 
   useEffect(() => {
-    cb && cb(categories as unknown as CookiesContextProps["categories"]);
-  }, [categories]);
+    let istneCookies = getIstneCookies();
+
+    interval.current = setInterval(() => {
+      Object.entries(istneCookies).forEach(([key, value], idx) => {
+        const compareValue = Object.values(getIstneCookies())[idx];
+
+        if (compareValue !== value && cb && key !== SHOWED_COOKIE)
+          cb({
+            key,
+            value: compareValue,
+          });
+      });
+
+      istneCookies = getIstneCookies();
+    }, 250);
+
+    return () => {
+      clearInterval(interval.current);
+    };
+  }, []);
 };
 
 export default useCookiesChange;
