@@ -1,3 +1,5 @@
+"use client";
+
 import Cookies from "./Cookies.js";
 import useCookiesChange from "./hooks/useCookiesChange.js";
 import useCookiesCategories from "./hooks/useCookies.js";
@@ -24,4 +26,5 @@ export {
   useCookiesCategories,
   getIstneCookies,
 };
+
 export default Cookies;
