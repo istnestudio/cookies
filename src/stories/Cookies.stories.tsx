@@ -24,6 +24,14 @@ const meta: Meta<typeof Cookies> = {
   component: () => (
     <>
       <Cookies
+        colors={{
+          switch: "#eaeaea",
+          switchChecked: "#FFF",
+          main: "#002B89",
+          background: "#FFF",
+          description: "#777",
+          button: "#FFF",
+        }}
         categories={{
           necessary: {
             title: "Strictly Necessary",

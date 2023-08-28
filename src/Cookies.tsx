@@ -30,14 +30,14 @@ export type CookiesProps = {
     accept?: string;
     back?: string;
     personalize?: string;
-    choiceAccept: string;
+    choiceAccept?: string;
   };
   colors?: {
     main?: string;
     background?: string;
     description?: string;
-    switch: string;
-    switchChecked: string;
+    switch?: string;
+    switchChecked?: string;
     button?: string;
   };
   onCookiesChange?: (cat: { key: string; value: boolean }) => any;
@@ -62,6 +62,43 @@ const defaultProps: CookiesProps = {
   },
 };
 
+/**
+ * Cookies consent component
+ * 
+ * @example
+ * <Cookies
+    colors={{
+      switch: "#eaeaea",
+      switchChecked: "#FFF",
+      main: "#002B89",
+      background: "#FFF",
+      description: "#777",
+      button: "#FFF",
+    }}
+    categories={{
+      necessary: {
+        title: "Strictly Necessary",
+        description:
+          "Strictly necessary cookies are essential for websites to provide simple functions or to access particular features. Such features include the ability to sign in, add items to your cart in an online store, or purchase stuff on the internet.",
+        selected: true,
+        uncheckable: true,
+      },
+      targeting: {
+        title: "Targeting",
+        description:
+          "Targeting cookies help to attract customers with targeted ads and also can be shared with other advertisers so that the performance of such ads can be monitored and measured. Targeting cookies also help build user profiles – by tracking data, websites can offer their customers the best-suited ads for their needs and keep ad revenue coming in.",
+        selected: false,
+      },
+    }}
+  >
+    The site uses cookies to provide the highest quality service and for
+    statistical purposes. You can read more in our{" "}
+    <a style={{ color: "#002b89", fontWeight: "600" }} href="#">
+      privacy policy
+    </a>{" "}
+    page
+  </Cookies>
+ */
 const Cookies = forwardRef<
   HTMLDivElement,
   CookiesProps & HTMLAttributes<HTMLDivElement>
@@ -207,7 +244,7 @@ const Cookies = forwardRef<
         {isPersonalizing ? (
           <div className="tw-flex tw-flex-col tw-gap-4">
             {Object.entries(categories).map(
-              ([key, { title, description, uncheckable }], idx) => (
+              ([key, { title, description, uncheckable, selected }], idx) => (
                 <div className="tw-flex tw-flex-col tw-gap-2" key={key}>
                   <div className="tw-flex tw-gap-4 tw-items-center">
                     <button
@@ -241,10 +278,10 @@ const Cookies = forwardRef<
                       {title}
                     </p>
                     <Switch
-                      checked={selectedCategories[key]}
-                      onCheckedChange={(checked) =>
-                        !uncheckable && onSwitchChange(idx, checked, key)
-                      }
+                      checked={selectedCategories[key] ?? selected}
+                      onCheckedChange={(checked) => {
+                        !uncheckable && onSwitchChange(idx, checked, key);
+                      }}
                       className="sw tw-h-[22px] tw-px-[2px]"
                       style={
                         {
@@ -253,7 +290,7 @@ const Cookies = forwardRef<
                           "--primary": hexToHsl(colors?.main),
                           "--input": hexToHsl(colors?.switch),
                           "--background": hexToHsl(
-                            selectedCategories[key]
+                            selectedCategories[key] ?? selected
                               ? colors?.switchChecked
                               : colors?.main
                           ),

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import cookie from "js-cookie";
 
@@ -15,7 +15,6 @@ const useCookies = () => {
 
   const setCategory = (key: string, state: boolean) => {
     const categoriesCopy = { ...categories };
-    console.log(key, state);
 
     categoriesCopy[key] = state;
     setCategories(categoriesCopy);
@@ -24,9 +23,7 @@ const useCookies = () => {
   };
 
   useEffect(() => {
-    const istneCookies = getIstneCookies();
-
-    setCategories(istneCookies);
+    setCategories(getIstneCookies());
   }, []);
 
   return {
